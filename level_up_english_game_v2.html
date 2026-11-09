@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEVEL UP! — English Challenge</title>
+<style>
+:root{
+ --bg:#1b2347;--panel:#243059;--panel2:#2b3866;--ink:#f4f6ff;--muted:#bcc6e2;
+ --purple:#9b7bff;--cyan:#51d9ed;--orange:#ff9b55;--yellow:#ffd66b;--green:#67e0ad;
+ --line:rgba(200,215,255,.24);--shadow:0 18px 55px rgba(0,0,0,.28)
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 15% 0%,#3a4283 0,transparent 36%),radial-gradient(ellipse at 90% 15%,#1f5a74 0,transparent 30%),var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+.shell{max-width:1120px;margin:auto;padding:28px 22px 60px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:28px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.12em}
+.brandmark{width:43px;height:43px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--purple),#4b9dff);box-shadow:0 8px 25px #7864ff55;font-size:22px}
+.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:.2em;font-weight:700;margin-top:3px}
+.stats{display:flex;gap:9px;flex-wrap:wrap}
+.stat{border:1px solid var(--line);background:#1e2a52cc;border-radius:13px;padding:9px 13px;color:var(--muted);font-size:12px}
+.stat b{color:var(--ink);font-size:14px;margin-left:5px}
+.hero{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:26px;padding:34px;background:linear-gradient(115deg,#323a82 0%,#2a4a86 55%,#1f6279 100%);box-shadow:var(--shadow);margin-bottom:22px}
+.hero:after{content:"";position:absolute;width:270px;height:270px;border:1px solid #ffffff18;border-radius:50%;right:8%;top:-115px;box-shadow:0 0 0 30px #ffffff08,0 0 0 65px #ffffff05}
+.eyebrow{font-size:11px;letter-spacing:.22em;font-weight:900;color:var(--cyan)}
+h1{font-size:clamp(40px,7vw,68px);line-height:.98;margin:12px 0 10px;letter-spacing:-.06em}
+h1 span{color:var(--yellow)}
+.hero p{color:#d6e0f5;max-width:590px;line-height:1.6;margin:0 0 22px}
+.primary,.secondary,.option,.chip{border:0;border-radius:12px;padding:12px 17px;font-weight:800;transition:.18s}
+.primary{background:linear-gradient(110deg,var(--yellow),var(--orange));color:#24172a;box-shadow:0 8px 22px #ff9b5540}
+.primary:hover,.secondary:hover,.option:hover{transform:translateY(-2px)}
+.secondary{background:#34457a;color:var(--ink);border:1px solid var(--line)}
+.progress-wrap{display:flex;align-items:center;gap:12px;margin:0 0 22px;color:var(--muted);font-size:12px}
+.progress{height:8px;background:#ffffff22;border-radius:99px;overflow:hidden;flex:1}
+.progress>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--purple),var(--cyan),var(--yellow));border-radius:99px;transition:width .3s}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0 24px}
+.level{background:linear-gradient(145deg,#2c3b6c,#243158);border:1px solid var(--line);border-radius:18px;padding:18px;min-height:160px;position:relative;overflow:hidden;cursor:pointer;transition:.2s}
+.level:hover{transform:translateY(-3px);border-color:#9b7bff88}
+.level.locked{opacity:.48;cursor:not-allowed;filter:saturate(.6)}
+.level.done{border-color:#67e0ad88}
+.level .num{font-size:11px;letter-spacing:.16em;color:var(--cyan);font-weight:900}
+.level .emoji{font-size:27px;margin:10px 0}
+.level h3{margin:0 0 6px;font-size:17px}
+.level p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}
+.level .status{position:absolute;right:15px;top:15px;font-size:11px;color:var(--green)}
+.panel{background:linear-gradient(145deg,#26335f,#202c55);border:1px solid var(--line);border-radius:22px;padding:clamp(20px,4vw,32px);box-shadow:var(--shadow)}
+.hidden{display:none!important}
+.kicker{font-size:11px;letter-spacing:.18em;color:var(--cyan);font-weight:900}
+h2{font-size:clamp(25px,4vw,34px);margin:9px 0 8px;letter-spacing:-.035em}
+.instructions{color:var(--muted);line-height:1.6;margin:0 0 22px}
+.question{font-size:18px;line-height:1.55;margin:18px 0}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.option{text-align:left;background:#33437a;border:1px solid var(--line);color:var(--ink);min-height:54px}
+.option:hover{border-color:var(--cyan);background:#3d5090}
+.option.correct{background:#1f6150;border-color:var(--green)}
+.option.wrong{background:#6e3a52;border-color:#ff718e}
+.option:disabled{cursor:default;transform:none}
+.feedback{padding:13px 15px;border-radius:12px;background:#33437a;color:#dce6ff;line-height:1.5;margin:14px 0}
+.feedback.good{background:#1f6150}.feedback.bad{background:#6e3a52}
+.actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:20px}
+.counter{font-size:12px;color:var(--muted)}
+.reading{padding:18px;background:#1a2650;border:1px solid var(--line);border-radius:15px;line-height:1.8;color:#dce6ff;margin:15px 0}
+.reading strong{color:var(--yellow)}
+.text-entry{width:100%;background:#19254f;border:1px solid #7384b8;color:var(--ink);padding:14px;border-radius:12px;outline:none}
+.text-entry:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #51d9ed20}
+textarea.text-entry{min-height:115px;resize:vertical}
+.match-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.match-item{padding:13px;border:1px solid var(--line);border-radius:12px;background:#33437a;color:var(--ink);text-align:left}
+.match-item.selected{border-color:var(--yellow);background:#4a4560}
+.match-item.matched{border-color:var(--green);opacity:.75}
+.scene{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.room{background:#2b3c6c;border:1px solid var(--line);border-radius:13px;padding:16px 10px;text-align:center;min-height:95px}
+.room b{display:block;font-size:25px;margin-bottom:5px}
+.room span{font-size:12px;color:#c4d0e8}
+.mapgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;max-width:500px;margin:18px auto}
+.mapcell{min-height:85px;background:#2e4073;border:1px solid #7384b8;border-radius:12px;display:grid;place-items:center;text-align:center;padding:8px;font-size:12px;color:#dce6ff}
+.mapcell strong{display:block;font-size:22px}
+.mapcell.target{border:2px dashed var(--yellow)}
+.dragrow{display:flex;flex-wrap:wrap;gap:9px;margin:15px 0}
+.draggable{padding:10px 13px;border-radius:10px;background:#3b4d85;border:1px solid #7384b8;color:white;cursor:grab}
+.dropzone{min-height:55px;padding:12px;border:2px dashed #8091c2;border-radius:12px;color:var(--muted);margin:10px 0}
+.dropzone.over{border-color:var(--cyan);background:#1d4a63}
+.badge{display:inline-block;padding:6px 10px;border-radius:99px;background:#3a3570;color:#c8baff;font-size:11px;font-weight:800}
+.end{text-align:center;padding:30px 10px}
+.end .trophy{font-size:60px}
+.end h2{font-size:38px}
+.small{font-size:12px;color:var(--muted)}
+.teacher{margin-top:22px;border-top:1px solid var(--line);padding-top:15px}
+.teacher summary{cursor:pointer;color:var(--muted);font-size:12px}
+.teacher ul{color:#c8d4ec;line-height:1.8;font-size:13px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#2a3a68;border:1px solid var(--line);padding:10px 16px;border-radius:99px;box-shadow:var(--shadow);font-size:13px;display:none}
+@media(max-width:720px){.grid{grid-template-columns:1fr 1fr}.hero{padding:25px 22px}.topbar{align-items:flex-start;flex-direction:column}.options{grid-template-columns:1fr}.scene{grid-template-columns:1fr 1fr}}
+@media(max-width:460px){.shell{padding:18px 13px 40px}.grid{grid-template-columns:1fr}.stats{width:100%}.stat{flex:1}.mapcell{min-height:72px;font-size:10px}}
+
+.level .emoji{width:68px;height:68px;margin:12px 0;border-radius:20px;display:grid;place-items:center;background:linear-gradient(135deg,#9b7bff,#4b9dff);box-shadow:0 8px 20px #0003}.level .emoji svg{width:46px;height:46px}
+.level:nth-child(2) .emoji{background:linear-gradient(135deg,#51d9ed,#4b9dff)}.level:nth-child(3) .emoji{background:linear-gradient(135deg,#ff9b55,#ff718e)}.level:nth-child(4) .emoji{background:linear-gradient(135deg,#67e0ad,#51d9ed)}.level:nth-child(5) .emoji{background:linear-gradient(135deg,#ffd66b,#ff9b55)}.level:nth-child(6) .emoji{background:linear-gradient(135deg,#ff718e,#9b7bff)}
+.vis{display:block;width:100%;height:auto;border-radius:16px;border:1px solid var(--line);margin:14px 0}.option{font-size:16px}
+.tok{display:inline-flex;align-items:center;gap:9px;padding:8px 14px 8px 8px;border-radius:14px;background:#3b4d85;border:2px solid #7384b8;color:#fff;font-weight:700;cursor:pointer}.tok svg{width:44px;height:44px}.tok.sel{border-color:var(--yellow);background:#5a5280}.tok.used{opacity:.4}
+.dropzone{cursor:pointer}.dropzone.filled{border-style:solid;border-color:var(--green);color:var(--ink)}.dropzone svg{width:30px;height:30px;vertical-align:middle}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-coffee" viewBox="0 0 64 64"><path d="M12 24h32v18a12 12 0 0 1-12 12h-8A12 12 0 0 1 12 42z" fill="#fff"/><path d="M44 28h4a7 7 0 0 1 0 14h-4" fill="none" stroke="#fff" stroke-width="4"/><path d="M20 8q-4 5 0 9M30 6q-4 6 0 11M40 8q-4 5 0 9" stroke="#ffd66b" stroke-width="3" fill="none" stroke-linecap="round"/><rect x="8" y="56" width="40" height="4" rx="2" fill="#ffd66b"/></symbol>
+<symbol id="i-school" viewBox="0 0 64 64"><path d="M4 28L32 10l28 18z" fill="#ffd66b"/><rect x="10" y="28" width="44" height="28" fill="#fff"/><rect x="26" y="38" width="12" height="18" fill="#7a5cff"/><rect x="14" y="34" width="8" height="8" fill="#51d9ed"/><rect x="42" y="34" width="8" height="8" fill="#51d9ed"/><rect x="31" y="2" width="2" height="9" fill="#fff"/><path d="M33 2h11v6H33z" fill="#ff718e"/></symbol>
+<symbol id="i-head" viewBox="0 0 64 64"><path d="M10 40V32a22 22 0 0 1 44 0v8" fill="none" stroke="#fff" stroke-width="5"/><rect x="5" y="34" width="15" height="22" rx="6" fill="#7a5cff"/><rect x="44" y="34" width="15" height="22" rx="6" fill="#7a5cff"/><rect x="9" y="39" width="7" height="12" rx="3" fill="#51d9ed"/><rect x="48" y="39" width="7" height="12" rx="3" fill="#51d9ed"/></symbol>
+<symbol id="i-chat" viewBox="0 0 64 64"><path d="M6 8h36a4 4 0 0 1 4 4v18a4 4 0 0 1-4 4H22l-10 9v-9H6a4 4 0 0 1-4-4V12a4 4 0 0 1 4-4z" fill="#fff"/><path d="M24 28h32a4 4 0 0 1 4 4v16a4 4 0 0 1-4 4h-4v8l-10-8H24a4 4 0 0 1-4-4V32a4 4 0 0 1 4-4z" fill="#ffd66b"/><circle cx="14" cy="21" r="3" fill="#7a5cff"/><circle cx="24" cy="21" r="3" fill="#7a5cff"/><circle cx="34" cy="21" r="3" fill="#7a5cff"/></symbol>
+<symbol id="i-spy" viewBox="0 0 64 64"><circle cx="27" cy="27" r="18" fill="#cfeaff" stroke="#fff" stroke-width="6"/><path d="M41 41l17 17" stroke="#ffd66b" stroke-width="9" stroke-linecap="round"/><path d="M17 24a11 11 0 0 1 9-8" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></symbol>
+<symbol id="i-boss" viewBox="0 0 64 64"><path d="M18 8l6 8M46 8l-6 8" stroke="#fff" stroke-width="4" stroke-linecap="round"/><rect x="8" y="16" width="48" height="32" rx="11" fill="#fff"/><rect x="18" y="26" width="10" height="11" rx="3" fill="#7a5cff"/><rect x="36" y="26" width="10" height="11" rx="3" fill="#7a5cff"/><rect x="22" y="41" width="20" height="4" rx="2" fill="#7a5cff"/><rect x="13" y="50" width="9" height="9" rx="3" fill="#fff"/><rect x="42" y="50" width="9" height="9" rx="3" fill="#fff"/></symbol>
+<symbol id="i-monitor" viewBox="0 0 64 64"><rect x="3" y="6" width="58" height="40" rx="5" fill="#1d2850"/><rect x="8" y="11" width="48" height="30" rx="2" fill="#51d9ed"/><path d="M12 38l12-14 9 9 6-6 11 11z" fill="#fff" opacity=".65"/><rect x="28" y="46" width="8" height="8" fill="#1d2850"/><rect x="16" y="53" width="32" height="6" rx="3" fill="#1d2850"/></symbol>
+<symbol id="i-kb" viewBox="0 0 100 36"><rect width="100" height="36" rx="6" fill="#1d2850"/><path d="M7 10h86M7 18h86M7 26h86" stroke="#dfe7ff" stroke-width="5" stroke-dasharray="8 3"/></symbol>
+<symbol id="i-pad" viewBox="0 0 64 64"><path d="M18 20h28c9 0 13 8 15 21 1 8-5 12-9 7s-6-8-11-8H23c-5 0-7 3-11 8s-10 1-9-7c2-13 6-21 15-21z" fill="#7a5cff" stroke="#fff" stroke-width="3"/><path d="M17 31h10M22 26v10" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="43" cy="29" r="3.5" fill="#ffd66b"/><circle cx="49" cy="35" r="3.5" fill="#ff718e"/></symbol>
+<symbol id="i-books" viewBox="0 0 64 64"><rect x="4" y="40" width="54" height="15" rx="2" fill="#51d9ed"/><rect x="9" y="25" width="48" height="15" rx="2" fill="#ff9b55"/><rect x="13" y="10" width="42" height="15" rx="2" fill="#7a5cff"/><path d="M12 47h40M16 32h32M20 17h28" stroke="#fff" stroke-width="3" opacity=".75"/></symbol>
+<symbol id="i-chair" viewBox="0 0 64 64"><rect x="16" y="3" width="32" height="32" rx="11" fill="#ff718e"/><rect x="24" y="8" width="16" height="22" rx="5" fill="#ffb3c2"/><rect x="10" y="35" width="44" height="11" rx="5" fill="#ff718e"/><rect x="29" y="46" width="6" height="9" fill="#dfe7ff"/><path d="M10 59h44M19 59l10-4M45 59l-10-4" stroke="#dfe7ff" stroke-width="4" stroke-linecap="round"/></symbol>
+</defs></svg>
+<div class="shell">
+ <header class="topbar">
+  <div class="brand"><div class="brandmark">⚡</div><div>LEVEL UP!<small>ENGLISH CHALLENGE</small></div></div>
+  <div class="stats"><div class="stat">⭐ XP <b id="xp">0</b></div><div class="stat">🏆 BADGES <b id="badges">0/6</b></div><div class="stat">🔥 STREAK <b id="streak">0</b></div></div>
+ </header>
+ <section class="hero" id="hero">
+  <div class="eyebrow">CAMPUS LIFE • GAMING • DAILY ROUTINES</div>
+  <h1>PLAY SMART.<br><span>LEVEL UP.</span></h1>
+  <p>Explore campus, decode daily routines and solve a few gamer mysteries. Read carefully, think fast and put your English to work.</p>
+  <button class="primary" onclick="startGame()">START YOUR QUEST&nbsp; →</button>
+ </section>
+ <div class="progress-wrap"><span>YOUR PROGRESS</span><div class="progress"><i id="progressbar"></i></div><b id="progresslabel">0%</b></div>
+ <section id="levels" class="grid">
+  <div class="level" onclick="openLevel(0)"><div class="num">LEVEL 01</div><div class="emoji"><svg><use href="#i-coffee"/></svg></div><h3>What's Your Routine?</h3><p>Frequency, habits and a student profile.</p></div>
+  <div class="level locked" onclick="openLevel(1)"><div class="num">LEVEL 02</div><div class="emoji"><svg><use href="#i-school"/></svg></div><h3>Around Campus</h3><p>Navigate places and find your way around.</p><span class="status">🔒</span></div>
+  <div class="level locked" onclick="openLevel(2)"><div class="num">LEVEL 03</div><div class="emoji"><svg><use href="#i-head"/></svg></div><h3>Gamer's Room</h3><p>Spot objects and describe their positions.</p><span class="status">🔒</span></div>
+  <div class="level locked" onclick="openLevel(3)"><div class="num">LEVEL 04</div><div class="emoji"><svg><use href="#i-chat"/></svg></div><h3>Social Life</h3><p>Messages, habits and sentence building.</p><span class="status">🔒</span></div>
+  <div class="level locked" onclick="openLevel(4)"><div class="num">LEVEL 05</div><div class="emoji"><svg><use href="#i-spy"/></svg></div><h3>The Missing Item</h3><p>Use clues to solve a campus mystery.</p><span class="status">🔒</span></div>
+  <div class="level locked" onclick="openLevel(5)"><div class="num">LEVEL 06</div><div class="emoji"><svg><use href="#i-boss"/></svg></div><h3>Final Boss</h3><p>Mix both grammar points and beat the boss.</p><span class="status">🔒</span></div>
+ </section>
+ <section id="game" class="panel hidden"></section>
+ <section id="finish" class="panel hidden"></section>
+ <details class="teacher"><summary>TEACHER ZONE · answer key & lesson notes</summary><ul>
+  <li><b>Target language:</b> always, often, usually, sometimes, hardly ever, never.</li>
+  <li><b>Prepositions:</b> next to, between, opposite, across from, behind, in front of, above, below, underneath, near, inside.</li>
+  <li><b>Visuals:</b> Levels 2 and 3 use a campus map (the road separates the rows, so “opposite” is clear) and a room picture. Every spatial answer can be checked in the image; answer positions are shuffled each time.</li>
+  <li><b>Teaching note:</b> “hardly ever” means almost never. Frequency adverbs usually go before the main verb, but after the verb “be”.</li>
+  <li><b>Writing assessment:</b> look for a clear routine, at least three frequency adverbs, and accurate place descriptions. Accept sensible personal answers.</li>
+ </ul></details>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const levels = [
+ {title:"What's Your Routine?",tag:"LEVEL 01 · DAILY HABITS",intro:"Read the context and choose the expression that makes the most sense. Think about meaning, not just grammar.",items:[
+  {type:"mc",q:"Milo has an 8 a.m. lecture every weekday. He ______ sets his alarm for 6:45.",opts:["never","usually","hardly ever","sometimes"],a:1,why:"“Usually” fits a regular weekday routine. It is not an absolute rule, but it happens most days."},
+  {type:"mc",q:"Nina is a night-owl. She ______ goes to bed before midnight; she prefers studying late.",opts:["often","always","hardly ever","usually"],a:2,why:"“Hardly ever” means almost never, which matches the clue that she prefers staying up late."},
+  {type:"reading",q:"Read Jay's profile.",text:"Jay shares an apartment near campus. He <strong>often</strong> walks to class because parking is expensive. He <strong>sometimes</strong> studies at the library, but he <strong>usually</strong> works at home. He <strong>never</strong> plays online games before finishing his assignments.",ask:"Which statement is true?",opts:["Jay always studies at the library.","Jay usually works at home.","Jay often drives to campus.","Jay plays games before doing assignments."],a:1,why:"The profile says he usually works at home. Notice the difference between “often” and “usually”."},
+  {type:"mc",q:"Choose the sentence with the correct word order.",opts:["I play usually games after dinner.","I usually play games after dinner.","Usually I games play after dinner.","I play games after usually dinner."],a:1,why:"Frequency adverbs normally go before the main verb: subject + usually + verb."},
+  {type:"write",q:"Write one true sentence about your study or gaming routine. Use one frequency adverb.",hint:"Example structure: I sometimes study / play ...",sample:"I often play online games after dinner."}
+ ]},
+ {title:"Around Campus",tag:"LEVEL 02 · CAMPUS MAP",visual:"map",intro:"Study the map. The road runs between two rows of buildings, so buildings on different sides of the road face each other. Every answer is on the map.",items:[
+  {type:"complete",q:"Look at the map.",sentence:"The café is ______ the main hall.",opts:["next to","behind","opposite","between"],a:0,why:"Both are on the same side of the road, side by side: the café is next to the main hall."},
+  {type:"complete",q:"Look at the map.",sentence:"The sports centre is ______ the library.",opts:["opposite","behind","next to","between"],a:0,why:"They are on different sides of the road and face each other: opposite (across from)."},
+  {type:"mc",q:"Which building is between the library and the café?",opts:["The main hall.","The food court.","The parking lot.","The garden."],a:0,why:"The main hall is in the middle of the row: library, main hall, café."},
+  {type:"complete",q:"Look at the map.",sentence:"The parking lot is ______ the main hall.",opts:["behind","opposite","between","next to"],a:0,why:"The parking lot is farther from the road, at the back of the main hall: behind."},
+  {type:"complete",q:"Look at the map.",sentence:"The library is ______ the garden.",opts:["in front of","behind","opposite","between"],a:0,why:"The garden is at the back, so the library, closer to the road, is in front of it."},
+  {type:"mc",q:"Which place is next to the garden?",opts:["The parking lot.","The café.","The bus stop.","The food court."],a:0,why:"The garden and the parking lot are side by side at the back."},
+  {type:"write",q:"Choose two places on the map and write one sentence about where one is in relation to the other.",hint:"Use: next to, opposite, between, behind or in front of.",sample:"The bus stop is opposite the café."}
+ ]},
+ {title:"Gamer's Room",tag:"LEVEL 03 · FIND THE OBJECT",visual:"room",intro:"Look at the room. Every answer is in the picture, so check where each object is before you choose.",items:[
+  {type:"mc",q:"Where are the headphones?",opts:["On the shelf.","Under the desk.","In front of the desk.","Above the monitor."],a:0,why:"The headphones are sitting on the shelf on the wall."},
+  {type:"mc",q:"Where is the controller?",opts:["Under the desk.","On the desk.","On the shelf.","Next to the books."],a:0,why:"The controller is on the floor, under the desk."},
+  {type:"complete",q:"Look at the picture.",sentence:"The poster is ______ the monitor.",opts:["above","below","next to","behind"],a:0,why:"The poster is higher on the wall than the monitor: above."},
+  {type:"complete",q:"Look at the picture.",sentence:"The gaming chair is ______ the desk.",opts:["in front of","behind","inside","above"],a:0,why:"The chair is at the front of the desk, facing it: in front of."},
+  {type:"mc",q:"The keyboard is in front of the monitor. So the monitor is ______ the keyboard.",opts:["behind","underneath","between","inside"],a:0,why:"If the keyboard is in front of the monitor, the monitor is behind the keyboard."},
+  {type:"mc",q:"Which object is next to the monitor on the desk?",opts:["The books.","The controller.","The headphones.","The poster."],a:0,why:"The books are on the desk, beside the monitor."},
+  {type:"drag",novis:true,q:"Read the clues and put each object in the right place.",clues:["The controller is on the floor, beneath the desktop.","The headphones are on the board fixed to the wall.","The chair faces the desk, at the front of it."],zones:["under the desk","on the shelf","in front of the desk"],tokens:[["i-pad","Controller"],["i-head","Headphones"],["i-chair","Chair"]],answers:[0,1,2],why:"The controller is under the desk, the headphones are on the shelf and the chair is in front of the desk."},
+  {type:"write",q:"Describe your ideal gaming or study setup. Include at least two prepositions of place.",hint:"Mention a screen, chair, desk, headphones or another object.",sample:"My monitor is on my desk and my headphones are next to my keyboard."}
+ ]},
+ {title:"Social Life",tag:"LEVEL 04 · MESSAGES & HABITS",intro:"Your friends are making plans. Read between the lines and choose the most natural English.",items:[
+  {type:"reading",q:"Read the group chat.",text:"<strong>Leo:</strong> Are you coming to the student bar tonight?<br><strong>Sam:</strong> I <strong>sometimes</strong> go there on Thursdays, but I have a deadline tomorrow.<br><strong>Leo:</strong> You <strong>often</strong> leave things until the last minute!<br><strong>Sam:</strong> True. I <strong>usually</strong> finish my work at the library, though. Maybe tomorrow?",ask:"What can we understand about Sam?",opts:["He goes to the student bar every Thursday.","He never studies at the library.","He regularly finishes work at the library.","He has no work to do."],a:2,why:"“Usually” tells us that finishing work at the library is his normal pattern."},
+  {type:"mc",q:"Which sentence sounds most natural?",opts:["She is always late for the study group.","She always is late for the study group.","She late always is for the study group.","Always she late for the study group is."],a:0,why:"With the verb “be”, the frequency adverb usually comes after the verb: she is always late."},
+  {type:"mc",q:"You want to say that you go to the gym only on very rare occasions. Choose the best sentence.",opts:["I always go to the gym.","I often go to the gym.","I hardly ever go to the gym.","I usually go to the gym."],a:2,why:"“Hardly ever” communicates that something happens very rarely."},
+  {type:"complete",q:"Choose the best adverb for a habit that happens on most days, but not every day.",sentence:"I ______ grab a coffee before my first lecture.",opts:["never","usually","hardly ever","once"],a:1,why:"“Usually” means something is the normal or most common pattern."},
+  {type:"write",q:"Write a short message to a friend about your plans this week. Use two different frequency adverbs.",hint:"You can mention classes, gaming, exercise, cafés or meeting friends.",sample:"I usually study in the afternoon, but I sometimes meet friends downtown."}
+ ]},
+ {title:"The Missing Item",tag:"LEVEL 05 · CASE FILE 014",intro:"A controller has disappeared from the gaming lounge. Use the witness statements to work out where it is.",items:[
+  {type:"reading",q:"Read the witness statements.",text:"Maya: “I <strong>usually</strong> leave my bag beside the sofa, but today I put it under the table.”<br>Ben: “I <strong>hardly ever</strong> use the lounge in the morning. I was there after lunch.”<br>Alex: “The controller wasn't on the desk. I saw a blue bag <strong>behind</strong> the sofa.”",ask:"Where did Alex see the blue bag?",opts:["Under the table.","Behind the sofa.","On the desk.","Beside the door."],a:1,why:"Alex explicitly says the blue bag was behind the sofa."},
+  {type:"mc",q:"Maya usually leaves her bag beside the sofa, but today she put it under the table. Which statement is correct?",opts:["Her bag is usually under the table.","Her bag is always beside the sofa.","Today, her bag is under the table.","She never uses the sofa."],a:2,why:"The clue contrasts her usual habit with today's location. Today the bag is under the table."},
+  {type:"mc",q:"The controller is not on the desk or under the table. It is in the space separating the sofa and the wall. Where is it?",opts:["Between the sofa and the wall.","Above the sofa.","Inside the desk.","Opposite the wall."],a:0,why:"“Between” is used for something in the space separating two things."},
+  {type:"complete",q:"Finish the detective's note.",sentence:"Ben ______ visits the lounge in the morning, so he probably didn't see the controller then.",opts:["always","often","hardly ever","usually"],a:2,why:"“Hardly ever” means he almost never visits in the morning."},
+  {type:"write",q:"Write one sentence explaining your theory. Include one frequency adverb and one preposition of place.",hint:"Example: Alex often checks the lounge, and the controller may be behind ...",sample:"Alex sometimes checks the lounge, so the controller may be behind the sofa."}
+ ]},
+ {title:"Final Boss",tag:"LEVEL 06 · FINAL CHALLENGE",intro:"One last round. Combine both grammar points and use the context to make smart choices.",items:[
+  {type:"mc",q:"Choose the sentence that is grammatically correct.",opts:["I never am late for class.","I am never late for class.","I am late never for class.","Never I am late for class."],a:1,why:"With “be”, the adverb of frequency comes after the verb: am never."},
+  {type:"reading",q:"Read the mini profile.",text:"Chris is a computer science student. He <strong>often</strong> works in the lab, which is <strong>opposite</strong> the library. He <strong>usually</strong> has lunch with his classmates. His laptop is always in his backpack, but he <strong>sometimes</strong> forgets his charger at home.",ask:"Where is the lab?",opts:["Behind the library.","Inside the library.","Opposite the library.","Between the library and the café."],a:2,why:"The text says the lab is opposite the library."},
+  {type:"mc",q:"Which sentence means “I play games, but this is a rare habit”?",opts:["I often play games.","I hardly ever play games.","I usually play games.","I always play games."],a:1,why:"“Hardly ever” signals a very low frequency."},
+  {type:"complete",q:"Complete the sentence.",sentence:"My friends ______ meet at the café next to the student centre after class.",opts:["sometimes","never to","hardly ever are","always meeting"],a:0,why:"“Sometimes” fits naturally before the main verb “meet”."},
+  {type:"write",q:"FINAL TASK: Write 4–5 sentences about a typical day and a place you enjoy. Use at least three frequency adverbs and three prepositions of place.",hint:"You can describe your routine, campus, room, favorite café or gaming setup.",sample:"I usually wake up early and often study at the library. The café is next to the main hall. I sometimes play games with my friends after class. My headphones are on the shelf above my desk. I hardly ever study late at night."}
+ ]}
+];
+let currentLevel=0,currentQ=0,xp=0,streak=0,completed=new Set(),answers=[],selectedMatch=null,dragState={};
+const $=id=>document.getElementById(id);
+function startGame(){ $('hero').classList.add('hidden');$('levels').classList.remove('hidden');$('levels').scrollIntoView({behavior:'smooth'}); }
+function updateStats(){ $('xp').textContent=xp;$('badges').textContent=completed.size+'/6';$('streak').textContent=streak;$('progressbar').style.width=(completed.size/6*100)+'%';$('progresslabel').textContent=Math.round(completed.size/6*100)+'%';document.querySelectorAll('.level').forEach((el,i)=>{el.classList.toggle('done',completed.has(i));el.classList.toggle('locked',i>0&&!completed.has(i-1)&&!completed.has(i));let s=el.querySelector('.status');if(s)s.textContent=completed.has(i)?'✓ COMPLETE':(i===0||completed.has(i-1)?'':'🔒')})}
+function openLevel(n){if(n>0&&!completed.has(n-1)&&!completed.has(n))return;currentLevel=n;currentQ=0;answers=[];$('levels').classList.add('hidden');$('finish').classList.add('hidden');$('game').classList.remove('hidden');renderQuestion();$('game').scrollIntoView({behavior:'smooth'});}
+let lastPos=-1,order=[],dg={};
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function mix(n,c){let r,t=0;do{r=shuffle([...Array(n).keys()]);t++}while(r.indexOf(c)===lastPos&&t<40);lastPos=r.indexOf(c);return r}
+const MAP=[["Garden","🌳",30,8,140,56,"#5cb878"],["Parking lot","🅿️",215,8,170,56,"#c3cbe3"],["Library","📚",30,80,140,64,"#ffd66b"],["Main hall","🏫",215,80,170,64,"#ff9b55"],["Café","☕",430,80,140,64,"#ffb3c2"],["Sports centre","🏟️",30,216,140,64,"#8fe0f0"],["Food court","🍽️",215,216,170,64,"#c8b6ff"],["Bus stop","🚌",430,216,140,64,"#f4f6ff"]];
+const VIS={
+map:()=>`<svg class="vis" viewBox="0 0 600 296" role="img" aria-label="Campus map: two rows of buildings with a road between them"><rect width="600" height="296" fill="#7fcf9f"/><rect y="156" width="600" height="48" fill="#4f5d84"/><path d="M0 180H600" stroke="#fff" stroke-width="3" stroke-dasharray="16 12"/><text x="300" y="173" text-anchor="middle" font-size="12" font-weight="800" fill="#fff" letter-spacing="5">ROAD</text>${MAP.map(([n,e,x,y,w,h,f])=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="${f}" stroke="#1d2850" stroke-opacity=".4" stroke-width="2"/><text x="${x+w/2}" y="${y+32}" text-anchor="middle" font-size="28">${e}</text><text x="${x+w/2}" y="${y+h-10}" text-anchor="middle" font-size="15" font-weight="800" fill="#1d2850">${n}</text>`).join('')}</svg>`,
+room:()=>`<svg class="vis" viewBox="0 0 560 290" role="img" aria-label="Gamer's room"><rect width="560" height="290" fill="#46598f"/><rect y="250" width="560" height="40" fill="#2f3b6b"/><rect x="235" y="6" width="90" height="46" rx="4" fill="#ffd66b" stroke="#fff" stroke-width="3"/><path d="M280 13l5 11 12 1-9 8 3 12-11-6-11 6 3-12-9-8 12-1z" fill="#ff718e"/><rect x="420" y="114" width="124" height="10" rx="3" fill="#d9a066"/><path d="M436 124h10v22zM518 124h10v22z" fill="#b9814a"/><use href="#i-head" x="458" y="62" width="52" height="52"/><polygon points="118,150 382,150 404,178 96,178" fill="#e8b57a"/><rect x="96" y="178" width="308" height="12" fill="#b9814a"/><rect x="112" y="190" width="12" height="60" fill="#b9814a"/><rect x="376" y="190" width="12" height="60" fill="#b9814a"/><use href="#i-pad" x="240" y="200" width="54" height="54"/><use href="#i-books" x="134" y="98" width="64" height="64"/><use href="#i-monitor" x="215" y="58" width="106" height="106"/><use href="#i-kb" x="224" y="146" width="96" height="31"/><use href="#i-chair" x="98" y="168" width="94" height="108"/></svg><p class="small">In the room: poster, monitor, keyboard, books, desk, controller, chair, shelf, headphones.</p>`
+};
+function renderQuestion(){
+ const L=levels[currentLevel],it=L.items[currentQ],g=$('game');
+ let body=`<div class="kicker">${L.tag}</div><h2>${L.title}</h2><p class="instructions">${L.intro}</p><div class="counter">CHALLENGE ${currentQ+1} / ${L.items.length}</div><div class="question">${it.q}</div>`;
+ if(L.visual&&!it.novis)body+=VIS[L.visual]();
+ if(it.type==='reading')body+=`<div class="reading">${it.text}</div><p><b>${it.ask}</b></p>`;
+ if(it.type==='complete')body+=`<div class="reading">${it.sentence||''}</div>`;
+ if(it.opts){order=mix(it.opts.length,it.a);body+=`<div class="options">${order.map((o,k)=>`<button class="option" onclick="choose(${k})" id="opt${k}"><b>${'ABCD'[k]}.</b> ${it.opts[o]}</button>`).join('')}</div>`}
+ if(it.type==='write')body+=`<p class="small">${it.hint}</p><textarea class="text-entry" id="written" placeholder="Type your answer here..."></textarea><div class="actions"><span class="small">Your teacher can review your writing.</span><button class="primary" onclick="submitWriting()">SUBMIT ANSWER →</button></div>`;
+ if(it.type==='drag'){dg={sel:null,place:{},t:shuffle(it.tokens.map((_,i)=>i)),z:shuffle(it.zones.map((_,i)=>i)),done:false};body+=`<div class="reading">${it.clues.map(c=>'• '+c).join('<br>')}</div><p class="small">Tap an object, then tap its place (or drag it there).</p><div class="dragrow" id="toks"></div><div id="zones"></div><button class="primary" onclick="checkDrag()">CHECK PLACEMENT →</button>`}
+ body+=`<div id="feedback"></div><div class="actions"><button class="secondary" onclick="backToLevels()">EXIT LEVEL</button><span class="counter">${xp} XP EARNED</span><button class="primary hidden" id="next" onclick="nextQuestion()">CONTINUE →</button></div>`;
+ g.innerHTML=body;if(it.type==='drag')drawDrag();
+}
+function choose(k){const it=levels[currentLevel].items[currentQ];document.querySelectorAll('.option').forEach(b=>b.disabled=true);const good=order[k]===it.a;$('opt'+k).classList.add(good?'correct':'wrong');if(!good)$('opt'+order.indexOf(it.a)).classList.add('correct');resolve(good,it.why);}
+function resolve(good,why){let f=$('feedback');f.className='feedback '+(good?'good':'bad');f.innerHTML=(good?'✓ Nice work! ':'Not quite. ') + why;$('next').classList.remove('hidden');if(good){xp+=20;streak++;}else{streak=0;}updateStats();}
+function submitWriting(){let val=$('written').value.trim();if(val.length<12){$('feedback').className='feedback bad';$('feedback').textContent='Add a little more detail before submitting. Try writing a complete sentence.';return;}let it=levels[currentLevel].items[currentQ];xp+=15;streak++;$('feedback').className='feedback good';$('feedback').innerHTML='✓ Answer saved for teacher review. Here is one possible answer: <i>'+it.sample+'</i>'; $('next').classList.remove('hidden');updateStats();}
+function drawDrag(){const it=levels[currentLevel].items[currentQ],used=Object.values(dg.place);
+ $('toks').innerHTML=dg.t.map(i=>`<button class="tok${dg.sel===i?' sel':''}${used.includes(i)?' used':''}" draggable="true" ondragstart="dg.sel=${i}" onclick="dg.sel=${i};drawDrag()"><svg><use href="#${it.tokens[i][0]}"/></svg>${it.tokens[i][1]}</button>`).join('');
+ $('zones').innerHTML=dg.z.map(z=>{const t=dg.place[z];return `<div class="dropzone${t!=null?' filled':''}" onclick="putTok(${z})" ondragover="event.preventDefault()" ondrop="event.preventDefault();putTok(${z})">${t!=null?`<svg><use href="#${it.tokens[t][0]}"/></svg> <b>${it.tokens[t][1]}</b> → `:'＋ Tap or drop an object → '}<b>${it.zones[z]}</b></div>`}).join('')}
+function putTok(z){if(dg.done||dg.sel==null)return;for(const k in dg.place)if(dg.place[k]===dg.sel)delete dg.place[k];dg.place[z]=dg.sel;dg.sel=null;drawDrag()}
+function checkDrag(){const it=levels[currentLevel].items[currentQ];if(dg.done)return;if(Object.keys(dg.place).length<it.zones.length){$('feedback').className='feedback bad';$('feedback').textContent='Place all the objects first.';return}dg.done=true;const good=it.zones.every((_,z)=>dg.place[z]===it.answers[z]);resolve(good,good?it.why:'Not quite. Read each clue again: '+it.why)}
+function nextQuestion(){currentQ++;if(currentQ>=levels[currentLevel].items.length){completed.add(currentLevel);updateStats();showLevelEnd();}else renderQuestion();}
+function showLevelEnd(){let L=levels[currentLevel];$('game').innerHTML=`<div class="end"><div class="trophy">🏆</div><div class="kicker">LEVEL COMPLETE</div><h2>${L.title}</h2><p class="instructions">You cleared this stage. Take a breath, then choose your next challenge.</p><span class="badge">+ XP EARNED · TOTAL ${xp}</span><div class="actions" style="justify-content:center"><button class="secondary" onclick="backToLevels()">LEVEL MAP</button>${currentLevel<5?`<button class="primary" onclick="openLevel(${currentLevel+1})">NEXT LEVEL →</button>`:`<button class="primary" onclick="finishGame()">SEE FINAL SCORE →</button>`}</div></div>`;}
+function backToLevels(){$('game').classList.add('hidden');$('levels').classList.remove('hidden');updateStats();$('levels').scrollIntoView({behavior:'smooth'});}
+function finishGame(){$('game').classList.add('hidden');$('levels').classList.add('hidden');$('finish').classList.remove('hidden');$('finish').innerHTML=`<div class="end"><div class="trophy">👾</div><div class="kicker">MISSION ACCOMPLISHED</div><h2>YOU LEVELLED UP!</h2><p class="instructions">You completed all six stages and earned <b>${xp} XP</b>. Great work combining routines, frequency and location language.</p><span class="badge">6 / 6 LEVELS COMPLETE</span><p style="margin-top:24px"><button class="primary" onclick="location.reload()">PLAY AGAIN ↻</button></p></div>`;}
+updateStats();
+</script>
+</body>
+</html>
